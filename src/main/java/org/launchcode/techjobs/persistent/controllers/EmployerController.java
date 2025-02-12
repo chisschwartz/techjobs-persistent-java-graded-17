@@ -29,6 +29,7 @@ public class EmployerController {
 
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
+//        model.addAttribute("title", "Add Employer");
         model.addAttribute(new Employer());
         return "employers/add";
     }
@@ -39,7 +40,7 @@ public class EmployerController {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Employer");
-            model.addAttribute(new Employer());
+//            model.addAttribute(new Employer());
             return "employers/add";
         }
 
@@ -48,31 +49,16 @@ public class EmployerController {
     }
 
     @GetMapping("view/{employerId}")
-    public String displayViewEmployer( @RequestParam(required = false) Model model, @PathVariable int employerId) {
+    public String displayViewEmployer(@RequestParam(required = false) Model model, @PathVariable int employerId) {
 
-        //Optional optEmployer = employerRepository.findById(String.valueOf(employerId));
-//        if (maybeNull != null) {
-//            model.addAttribute("title", "All Employers");
-//            model.addAttribute("employers", employerRepository.findAll());
-//        } else {
-//            Optional<Employer> result = employerRepository.findById(employerId);
-//            if (result.isEmpty()) {
-//                model.addAttribute("employer", "Invalid Employer ID: " + employerId);
-//            } else {
-//                Employer employer = result.get();
-//                model.addAttribute("title", "Employers: " + employer.getName());
-//            model.addAttribute("employers", employer.get)
-
-        Optional<Employer> result = employerRepository.findById(employerId);
-        if (result.isEmpty()) {
-            model.addAttribute("title", "Invalid Employer ID: " + employerId);
-        } else {
-            Employer employer = result.get();
-            model.addAttribute("title", "Employers: " + employer.getName());
+        Optional<Employer> optEmployer = employerRepository.findById(employerId);
+        if (optEmployer.isPresent()) {
+            Employer employer = (Employer) optEmployer.get();
             model.addAttribute("employer", employer);
             return "employers/view";
-
+        } else {
+            return "redirect:.../";
         }
-        return "redirect:.../";
     }
 }
+
